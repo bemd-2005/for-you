@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Lady </title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: 'EB Garamond', Georgia, serif;
+    color: #f5ece6;
+    background: #0a0506;
+    background-image: linear-gradient(rgba(10,5,6,0.6), rgba(10,5,6,0.8)), url('https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0458.jpg'); background-size: cover; background-position: center; background-attachment: fixed;
+    
+  }
+  .scene {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    scroll-snap-align: start;
+  }
+  .eyebrow {
+    font-size: 0.78rem; letter-spacing: 4px; text-transform: uppercase;
+    color: #ff00c4; opacity: 0.9; margin-bottom: 14px;
+  }
+  h1.hero-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    font-weight: 500; color: #fdece8; margin-bottom: 18px;
+  }
+  #hero { background: transparent; }
+  .scroll-hint {
+    position: absolute; bottom: 28px; font-size: 0.8rem;
+    letter-spacing: 2px; color: #b98a8a; opacity: 0.8;
+    animation: bounce 2.2s ease-in-out infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  #heartScene { background: transparent; cursor: pointer; }
+  .scene-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 500;
+    color: #fdece8; margin-bottom: 6px;
+  }
+  canvas#heart { max-width: 92vw; margin-top: 10px; }
+  .tap-hint { font-size: 0.8rem; color: #b98a8a; margin-top: 10px; letter-spacing: 1px; }
+
+  .overlay {
+    position: fixed; inset: 0; background: rgba(8,4,5,0.92);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+    padding: 40px;
+  }
+  .overlay.show { opacity: 1; pointer-events: auto; }
+  .overlay-content {
+    max-width: 460px; text-align: center; font-size: 1.2rem;
+    line-height: 1.8; color: #ffe8e0; font-style: italic;
+  }
+  .overlay-close {
+    margin-top: 28px; background: none; border: 1px solid #ff00c4;
+    color: #ff00c4; padding: 10px 24px; border-radius: 30px;
+    font-family: inherit; letter-spacing: 1px; cursor: pointer;
+  }
+
+  .carousel {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; max-width: 520px; margin-top: 20px;
+  }
+  .car-track {
+    flex: 1; width: 100%; min-height: 260px; aspect-ratio: 4/3; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5); background: #1a0e10;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .car-track img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.3s ease; }
+  .car-track .img-error { font-size: 0.85rem; color: #b98a8a; padding: 20px; }
+  .car-btn {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+    color: #f5ece6; width: 40px; height: 40px; border-radius: 50%;
+    font-size: 1.3rem; cursor: pointer; flex-shrink: 0;
+  }
+  .car-btn:hover { background: rgba(255,255,255,0.16); }
+  .dots { display: flex; gap: 8px; margin-top: 16px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #5a3a3e; }
+  .dot.active { background: #ff00c4; }
+
+  .timeline { max-width: 520px; text-align: left; margin-top: 10px; }
+  .moment { padding: 16px 0 16px 20px; border-left: 2px solid #ff00c455; margin-bottom: 4px; position: relative; }
+  .moment::before {
+    content: ''; position: absolute; left: -6px; top: 20px;
+    width: 10px; height: 10px; border-radius: 50%; background: #ff00c4;
+  }
+  .moment h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 500; font-size: 1.1rem; color: #fdece8; margin-bottom: 4px; }
+  .moment p { font-size: 0.98rem; color: #d8c3c3; line-height: 1.6; }
+
+  .final-msg { max-width: 480px; font-size: 1.1rem; line-height: 1.8; color: #e9d5d5; white-space: pre-wrap; margin-top: 8px; }
+  .sig { font-style: italic; color: #c9a876; margin-top: 22px; font-size: 1rem; }
+
+  #musicControls {
+    position: fixed; bottom: 22px; right: 22px; z-index: 40;
+    display: flex; gap: 8px;
+  }
+  #musicControls button {
+    background: rgba(20,10,12,0.75); backdrop-filter: blur(6px);
+    border: 1px solid #ff00c466; color: #ff00c4;
+    padding: 10px 16px; border-radius: 30px; font-family: inherit;
+    font-size: 0.85rem; letter-spacing: 1px; cursor: pointer;
+  }
+
+  .confetti { position: fixed; top: 0; left: 0; width: 8px; height: 8px; border-radius: 2px; pointer-events: none; z-index: 60; }
+
+  .big-count {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(4.5rem, 18vw, 8rem);
+    font-weight: 600; color: #fdece8; line-height: 1;
+    text-shadow: 0 0 30px #ff00c455;
+  }
+  .count-label {
+    margin-top: 10px; font-size: 0.85rem; letter-spacing: 3px;
+    text-transform: uppercase; color: #ff00c4;
+  }
+
+  .navdots {
+    position: fixed; right: 18px; top: 50%; transform: translateY(-50%);
+    z-index: 45; display: flex; flex-direction: column; gap: 12px;
+  }
+  .navdot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: rgba(255,255,255,0.25); cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  .navdot.active { background: #ff00c4; transform: scale(1.3); border-color: #ff00c4; }
+
+  .heart-trail {
+    position: fixed; pointer-events: none; z-index: 70;
+    font-size: 14px; color: #ff00c4;
+    animation: trailFade 900ms ease-out forwards;
+  }
+  @keyframes trailFade {
+    0% { opacity: 0.9; transform: translate(-50%,-50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%,-120%) scale(0.4); }
+  }
+
+  @media (max-width: 640px) {
+    .navdots { right: 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-hint { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="navdots" id="navdots"></div>
+
+<section class="scene" id="hero">
+  <div class="eyebrow">P.S. On dit "My Lady" pour une femme qu'on respecte et qu'on chérit plus que tout. C'est exactement ce que tu es pour moi. Merci d'exister. Merci d'être toi. Je t'aime, My Lady. Plus qu'hier, moins que demain.</div>
+  <h1 class="hero-title">For My Lady </h1>
+  <div class="scroll-hint">faire défiler ↓</div>
+</section>
+
+<section class="scene" id="heartScene">
+  <div class="eyebrow">Marius &amp; Alvane </div>
+  <canvas id="heart" width="640" height="560"></canvas>
+  <div class="tap-hint">touche le cœur</div>
+</section>
+
+
+  <section class="scene" id="counterScene">
+    <div class="eyebrow">Depuis le début</div>
+    <div class="big-count" id="bigCount">0</div>
+    <div class="count-label">jours ensemble</div>
+  </section>
+
+
+  <section class="scene" id="gallery">
+    <div class="eyebrow">Galerie</div>
+    <h2 class="scene-title">Nos images</h2>
+    <div class="carousel">
+      <button class="car-btn prev" aria-label="Précédent">‹</button>
+      <div class="car-track"><img id="carImg" src="https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260502-WA0015.jpg" alt="" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'img-error',textContent:'Image introuvable — vérifie le lien'}))"></div>
+      <button class="car-btn next" aria-label="Suivant">›</button>
+    </div>
+    <div class="dots" id="dots"></div>
+  </section>
+
+
+<section class="scene" id="finalScene">
+  <div class="eyebrow">Nos moments</div><div class="timeline" id="timeline"></div>
+  <div class="eyebrow" style="margin-top:34px;">Pour finir</div><div class="final-msg">My Lady, si tu lis ceci, sache que tu es mon plus beau bug. Celui que je ne veux jamais corriger</div>
+  <div class="sig">I'st sokrovishche </div>
+</section>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-content">te donner. Mon temps, mes fous rires, mes failles, tous mes lendemains. Tu n'as pas rendu ma vie plus belle. Tu l'as rendue vraie. Avec toi, je n'ai plus besoin de faire semblant, de filtrer qui je suis. Et c'est le plus beau cadeau qu'on m'ait jamais fait. Ce site, c'est juste un endroit à ton image au milieu de mon monde. Un endroit rien qu'à toi. Parce que c'est exactement la place que tu as dans mon cœur</div>
+</div>
+<script>document.getElementById('overlay').innerHTML += '<button class="overlay-close" onclick="document.getElementById(\'overlay\').classList.remove(\'show\')">fermer</button>';</script>
+
+
+  <audio id="bgm" loop></audio>
+  <div id="musicControls">
+    <button id="musicToggle" aria-label="Musique">♪ Musique</button>
+    <button id="musicNext" aria-label="Piste suivante">⇥</button>
+  </div>
+  
+
+<script>
+// ---- Cœur qui s'assemble ----
+const words = ["i love you","Alvane","Alvane "];
+const ACCENT = '#ff00c4';
+const canvas = document.getElementById('heart');
+const ctx = canvas.getContext('2d');
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return [r,g,b];
+}
+const [R,G,B] = hexToRgb(ACCENT);
+
+function isInsideHeart(x, y) {
+  const eq = Math.pow(x*x + y*y - 1, 3) - x*x*y*y*y;
+  return eq <= 0;
+}
+
+const W = canvas.width, H = canvas.height;
+const scale = Math.min(W, H) / 2.6;
+const cx = W / 2, cy = H / 2 + 40;
+
+let particles = [];
+const target = 170;
+let attempts = 0;
+while (particles.length < target && attempts < 20000) {
+  attempts++;
+  const nx = (Math.random() * 2.6 - 1.3);
+  const ny = (Math.random() * 2.4 - 1.2);
+  if (isInsideHeart(nx, ny)) {
+    const tx = cx + nx * scale;
+    const ty = cy - ny * scale;
+    const size = 10 + Math.random() * 8;
+    const word = words[Math.floor(Math.random() * words.length)];
+
+    // Pré-rendu offscreen (glow calculé une seule fois)
+    const off = document.createElement('canvas');
+    const pad = 40;
+    off.width = size * word.length * 0.62 + pad;
+    off.height = size * 2 + pad;
+    const octx = off.getContext('2d');
+    octx.font = size + 'px Georgia, serif';
+    octx.textAlign = 'center';
+    octx.textBaseline = 'middle';
+    octx.shadowColor = `rgba(${R},${G},${B},0.95)`;
+    octx.shadowBlur = 14;
+    octx.fillStyle = `rgba(${Math.min(255,R+40)},${G},${B},1)`;
+    octx.fillText(word, off.width/2, off.height/2);
+
+    particles.push({
+      sx: Math.random() * W, sy: Math.random() * H * 0.6 + H * 0.7 * Math.random() * -1 + Math.random()*H,
+      tx, ty,
+      off, w: off.width, h: off.height,
+      delay: Math.random() * 500,
+      dur: 1500 + Math.random() * 900,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.0016 + Math.random() * 0.0012
+    });
+  }
+}
+// positions de départ dispersées sur tout l'écran (au-delà du canvas aussi, visuellement via clamp)
+particles.forEach(p => {
+  p.sx = Math.random() * W;
+  p.sy = Math.random() * H;
+});
+
+function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+
+let start = null;
+let assembled = false;
+
+function frame(now) {
+  if (!start) start = now;
+  const t = now - start;
+  ctx.clearRect(0, 0, W, H);
+  let allDone = true;
+  for (const p of particles) {
+    const localT = t - p.delay;
+    let x, y, alpha;
+    if (localT <= 0) {
+      x = p.sx; y = p.sy; alpha = 0;
+      allDone = false;
+    } else if (localT < p.dur) {
+      const e = easeOutCubic(localT / p.dur);
+      x = p.sx + (p.tx - p.sx) * e;
+      y = p.sy + (p.ty - p.sy) * e;
+      alpha = e;
+      allDone = false;
+    } else {
+      const flicker = 0.6 + 0.4 * Math.sin(t * p.speed + p.phase);
+      x = p.tx; y = p.ty; alpha = flicker;
+    }
+    ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+    ctx.drawImage(p.off, x - p.w/2, y - p.h/2);
+  }
+  ctx.globalAlpha = 1;
+  if (allDone && !assembled) assembled = true;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+function resizeCanvas() {
+  const maxW = Math.min(640, window.innerWidth * 0.92);
+  const ratio = maxW / 640;
+  canvas.style.width = maxW + 'px';
+  canvas.style.height = (560 * ratio) + 'px';
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// ---- Clic = message caché + confettis ----
+const secretText = "te donner. Mon temps, mes fous rires, mes failles, tous mes lendemains. Tu n'as pas rendu ma vie plus belle. Tu l'as rendue vraie. Avec toi, je n'ai plus besoin de faire semblant, de filtrer qui je suis. Et c'est le plus beau cadeau qu'on m'ait jamais fait. Ce site, c'est juste un endroit à ton image au milieu de mon monde. Un endroit rien qu'à toi. Parce que c'est exactement la place que tu as dans mon cœur";
+if (secretText) {
+  canvas.addEventListener('click', (e) => {
+    document.getElementById('overlay').classList.add('show');
+    burstConfetti(e.clientX, e.clientY);
+  });
+}
+
+function burstConfetti(x, y) {
+  const colors = ['#ff00c4', '#ffd27a', '#ff8fa3', '#fff'];
+  for (let i = 0; i < 36; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    document.body.appendChild(el);
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 80 + Math.random() * 140;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist - 40;
+    el.animate([
+      { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+      { transform: `translate(${dx}px, ${dy + 160}px) rotate(${Math.random()*360}deg)`, opacity: 0 }
+    ], { duration: 1100 + Math.random()*500, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    setTimeout(() => el.remove(), 1700);
+  }
+}
+
+// ---- Galerie ----
+const photos = ["https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260502-WA0015.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0451.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0456.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0458.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0459.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0464.jpg"];
+if (photos.length > 1) {
+  let idx = 0;
+  const img = document.getElementById('carImg');
+  const dotsWrap = document.getElementById('dots');
+  photos.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    dotsWrap.appendChild(d);
+  });
+  function update() {
+    img.style.opacity = 0;
+    setTimeout(() => { img.src = photos[idx]; img.style.opacity = 1; }, 200);
+    [...dotsWrap.children].forEach((d,i) => d.classList.toggle('active', i===idx));
+  }
+  document.querySelector('.prev').addEventListener('click', () => { idx = (idx-1+photos.length)%photos.length; update(); });
+  document.querySelector('.next').addEventListener('click', () => { idx = (idx+1)%photos.length; update(); });
+}
+
+// ---- Timeline ----
+const moments = [{"titre":"First meet","texte":"On s'est rencontré un peu par hasard dans ce groupe..."},{"titre":"First call","texte":"Lors de notre premier appel en solo j'ai compris tout suite que tu étais différente Ce qui m'a fait craquer J'ai été agréablement surpris lorsque j'ai constaté que tu avais une personnalité différente avec des centres d'intérêt originaux, ta façon d'argumenter, tes prises de position, ta voix, m'ont infecté l'esprit"},{"titre":"Aujourd'hui","texte":"Tu es l'une des personnes qui comptent le plus pour moi même si on ne s'est pas encore vu , je le ressens encore plus maintenant Et après ? J'aimerais qu'on continue pour l'éternité sans jamais s'arrêter car désormais tu es une partie de moi ...."}];
+if (moments.length) {
+  const wrap = document.getElementById('timeline');
+  moments.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'moment';
+    div.innerHTML = '<h3>' + m.titre + '</h3><p>' + m.texte + '</p>';
+    wrap.appendChild(div);
+  });
+}
+
+// ---- Navigation par points ----
+const scenes = document.querySelectorAll('.scene');
+const navWrap = document.getElementById('navdots');
+scenes.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'navdot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => s.scrollIntoView({ behavior: 'smooth' }));
+  navWrap.appendChild(dot);
+});
+const navDots = navWrap.querySelectorAll('.navdot');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = [...scenes].indexOf(entry.target);
+      navDots.forEach((d,i) => d.classList.toggle('active', i === idx));
+    }
+  });
+}, { threshold: 0.55 });
+scenes.forEach(s => io.observe(s));
+
+// ---- Compteur de jours animé ----
+const bigCount = document.getElementById('bigCount');
+const targetDays = 31;
+if (bigCount) {
+  let counted = false;
+  const counterObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !counted) {
+        counted = true;
+        const dur = 1400;
+        const t0 = performance.now();
+        function step(now) {
+          const p = Math.min(1, (now - t0) / dur);
+          bigCount.textContent = Math.floor(p * targetDays);
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+    });
+  }, { threshold: 0.5 });
+  counterObs.observe(bigCount.closest('.scene'));
+}
+
+// ---- Traînée de cœurs (souris + tactile) ----
+let lastTrail = 0;
+function spawnHeart(x, y) {
+  const now = performance.now();
+  if (now - lastTrail < 55) return;
+  lastTrail = now;
+  const el = document.createElement('div');
+  el.className = 'heart-trail';
+  el.textContent = '♥';
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 950);
+}
+window.addEventListener('pointermove', (e) => spawnHeart(e.clientX, e.clientY));
+window.addEventListener('touchmove', (e) => {
+  const t = e.touches[0];
+  if (t) spawnHeart(t.clientX, t.clientY);
+}, { passive: true });
+
+// ---- Musique (playlist) ----
+const playlist = ["https://raw.githubusercontent.com/bemd-2005/for-you/main/86_EIGHTY-SIX_-_Ending_Full%E3%80%8EAvid%E3%80%8Fby_SawanoHiroyuki%5BnZk%5D_mizuki(256k).mp3","https://raw.githubusercontent.com/bemd-2005/for-you/main/Adele_-_Love_In_The_Dark__Lyrics_(256k).mp3"];
+const bgm = document.getElementById('bgm');
+const musicBtn = document.getElementById('musicToggle');
+const nextBtn = document.getElementById('musicNext');
+if (bgm && musicBtn && playlist.length) {
+  let track = 0;
+  let playing = false;
+  bgm.src = playlist[0];
+  bgm.addEventListener('ended', () => {
+    track = (track + 1) % playlist.length;
+    bgm.src = playlist[track];
+    if (playing) bgm.play().catch(()=>{});
+  });
+  musicBtn.addEventListener('click', () => {
+    if (playing) { bgm.pause(); musicBtn.textContent = '♪ Musique'; }
+    else { bgm.play().catch(()=>{}); musicBtn.textContent = '❙❙ Pause'; }
+    playing = !playing;
+  });
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      track = (track + 1) % playlist.length;
+      bgm.src = playlist[track];
+      if (playing) bgm.play().catch(()=>{});
+    });
+  }
+}
+</script>
+</body>
+</html>
