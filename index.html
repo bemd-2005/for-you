@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pour toi lady mon code source préféré </title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital@0;1&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  :root { --ac:#2ee59d;--d0:#050a08;--d1:#0a1712;--d2:#0c1c15;--tx:#e8fdf3;--tx2:#e6f5ee;--mu:#8ab9a4;--mu2:#c3d8cf;--rgb:46,229,157; }
+  html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+  body {
+    font-family: 'EB Garamond', Georgia, serif;
+    color: var(--tx2);
+    background: var(--d0);
+    background-image: linear-gradient(rgba(10,5,6,0.27999999999999997), rgba(10,5,6,0.4)), url('https://cdn.jsdelivr.net/gh/bemd-2005/for-you@e0c3c268f3e6307443f64e461dc8d2599b393304/IMG-20260807-WA0000.jpg'); background-size: cover; background-position: center; background-attachment: fixed;
+    
+  }
+  .scene {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    scroll-snap-align: start;
+  }
+  .eyebrow {
+    font-size: 0.78rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--ac); opacity: 0.9; margin-bottom: 14px;
+  }
+  h1.hero-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    font-weight: 500; color: var(--tx); margin-bottom: 18px;
+  }
+  #hero { background: transparent; }
+  .scroll-hint {
+    position: absolute; bottom: 28px; font-size: 0.8rem;
+    letter-spacing: 2px; color: var(--mu); opacity: 0.8;
+    animation: bounce 2.2s ease-in-out infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  #heartScene { background: transparent; cursor: pointer; }
+  .scene-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 500;
+    color: var(--tx); margin-bottom: 6px;
+  }
+  canvas#heart { max-width: 92vw; margin-top: 10px; }
+  .tap-hint { font-size: 0.8rem; color: var(--mu); margin-top: 10px; letter-spacing: 1px; }
+
+  .overlay {
+    position: fixed; inset: 0; background: rgba(8,4,5,0.92);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+    padding: 40px;
+  }
+  .overlay.show { opacity: 1; pointer-events: auto; }
+  .overlay-content {
+    max-width: 460px; text-align: center; font-size: 1.2rem;
+    line-height: 1.8; color: var(--tx); font-style: italic;
+  }
+  .overlay-close {
+    margin-top: 28px; background: none; border: 1px solid var(--ac);
+    color: var(--ac); padding: 10px 24px; border-radius: 30px;
+    font-family: inherit; letter-spacing: 1px; cursor: pointer;
+  }
+
+  .carousel {
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; max-width: 520px; margin-top: 20px;
+  }
+  .car-track {
+    flex: 1; width: 100%; min-height: 260px; aspect-ratio: 4/3; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5); background: var(--d1);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .car-track img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.3s ease; }
+  .car-track .img-error { font-size: 0.85rem; color: var(--mu); padding: 20px; }
+  .car-btn {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+    color: var(--tx2); width: 40px; height: 40px; border-radius: 50%;
+    font-size: 1.3rem; cursor: pointer; flex-shrink: 0;
+  }
+  .car-btn:hover { background: rgba(255,255,255,0.16); }
+  .dots { display: flex; gap: 8px; margin-top: 16px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(var(--rgb),.35); }
+  .dot.active { background: var(--ac); }
+
+  .timeline { max-width: 520px; text-align: left; margin-top: 10px; }
+  .moment { padding: 16px 0 16px 20px; border-left: 2px solid rgba(var(--rgb),.33); margin-bottom: 4px; position: relative; }
+  .moment::before {
+    content: ''; position: absolute; left: -6px; top: 20px;
+    width: 10px; height: 10px; border-radius: 50%; background: var(--ac);
+  }
+  .moment h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 500; font-size: 1.1rem; color: var(--tx); margin-bottom: 4px; }
+  .moment p { font-size: 0.98rem; color: var(--mu2); line-height: 1.6; }
+
+  .final-msg { max-width: 480px; font-size: 1.1rem; line-height: 1.8; color: var(--mu2); white-space: pre-wrap; margin-top: 8px; }
+  .sig { font-style: italic; color: #c9a876; margin-top: 22px; font-size: 1rem; }
+
+  #musicControls {
+    position: fixed; bottom: 22px; right: 22px; z-index: 40;
+    display: flex; gap: 8px;
+  }
+  #musicControls button {
+    background: rgba(20,10,12,0.75); backdrop-filter: blur(6px);
+    border: 1px solid rgba(var(--rgb),.4); color: var(--ac);
+    padding: 10px 16px; border-radius: 30px; font-family: inherit;
+    font-size: 0.85rem; letter-spacing: 1px; cursor: pointer;
+  }
+
+  .confetti { position: fixed; top: 0; left: 0; width: 8px; height: 8px; border-radius: 2px; pointer-events: none; z-index: 60; }
+
+  .big-count {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(4.5rem, 18vw, 8rem);
+    font-weight: 600; color: var(--tx); line-height: 1;
+    text-shadow: 0 0 30px rgba(var(--rgb),.33);
+  }
+  .count-label {
+    margin-top: 10px; font-size: 0.85rem; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--ac);
+  }
+
+  .navdots {
+    position: fixed; right: 18px; top: 50%; transform: translateY(-50%);
+    z-index: 45; display: flex; flex-direction: column; gap: 12px;
+  }
+  .navdot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: rgba(255,255,255,0.25); cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  .navdot.active { background: var(--ac); transform: scale(1.3); border-color: var(--ac); }
+
+  .heart-trail {
+    position: fixed; pointer-events: none; z-index: 70;
+    font-size: 14px; color: var(--ac);
+    animation: trailFade 900ms ease-out forwards;
+  }
+  @keyframes trailFade {
+    0% { opacity: 0.9; transform: translate(-50%,-50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%,-120%) scale(0.4); }
+  }
+
+  @media (max-width: 640px) {
+    .navdots { right: 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-hint { animation: none; }
+  }
+  html { scroll-snap-type: y proximity; }
+  body.lock { overflow: hidden; }
+  #heartScene { background: transparent !important; }
+  .scene { z-index: 1; }
+  #sky { position: fixed; inset: 0; z-index: -1; background: linear-gradient(var(--d0),var(--d1)); opacity:0.35; }
+  #fx { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .halo { position: fixed; left: 0; top: 0; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; pointer-events: none; z-index: 65; background: radial-gradient(circle, rgba(var(--rgb),.33), transparent 68%); mix-blend-mode: screen; opacity: 0; transition: opacity .4s; }
+  /* Ouverture : chargement + rideau */
+  #loader { position: fixed; inset: 0; z-index: 100; }
+  .ld-half { position: absolute; top: 0; bottom: 0; width: 50.5%; background: linear-gradient(var(--d2),var(--d0)); transition: transform 1.8s cubic-bezier(.7,0,.2,1); }
+  .ld-half.l { left: 0; border-right: 1px solid rgba(var(--rgb),.33); }
+  .ld-half.r { right: 0; }
+  #loader.open .l { transform: translateX(-101%); }
+  #loader.open .r { transform: translateX(101%); }
+  .ld-c { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; transition: opacity .6s; }
+  #loader.open .ld-c { opacity: 0; }
+  .ld-txt { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-size: 1.25rem; color: var(--tx); animation: pulse 2s ease-in-out infinite; }
+  .ld-bar { width: 180px; height: 2px; background: rgba(255,255,255,.12); overflow: hidden; border-radius: 2px; }
+  .ld-bar i { display: block; height: 100%; background: var(--ac); box-shadow: 0 0 10px var(--ac); transform-origin: left; animation: fill 2.4s ease-in-out forwards; }
+  @keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes pulse { 50% { opacity: .5; } }
+  #hero > * { transition: opacity 1.6s ease .8s; }
+  body:not(.go) #hero > * { opacity: 0; }
+  /* Apparitions au scroll */
+  .rv { opacity: 0; transform: translateY(26px); transition: opacity .9s ease, transform .9s ease; }
+  .rv.in { opacity: 1; transform: none; }
+  /* Verre dépoli */
+  .glass { background: rgba(255,255,255,.06); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,.13); border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,.35); }
+  /* Timeline lumineuse */
+  .timeline { position: relative; width: 100%; max-width: 520px; padding-left: 30px; }
+  .tl-line { position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,.12); }
+  #tlFill { display: block; width: 100%; height: 0; background: linear-gradient(var(--ac), #ffd27a); box-shadow: 0 0 14px var(--ac); }
+  .moment { border-left: none; padding: 16px 20px; margin: 0 0 16px; }
+  .moment::before { left: -29px; top: 24px; width: 10px; height: 10px; background: rgba(var(--rgb),.35); transition: background .5s, box-shadow .5s; }
+  .moment.lit::before { background: var(--ac); box-shadow: 0 0 14px var(--ac), 0 0 4px #fff; }
+  /* Polaroids */
+  .stack { position: relative; width: min(76vw,300px); height: min(94vw,366px); margin-top: 28px; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+  .pol { position: absolute; inset: 0; background: #f7f0e8; padding: 12px 12px 46px; border-radius: 3px; box-shadow: 0 18px 40px rgba(0,0,0,.55); transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .45s; cursor: grab; }
+  .pol.drag { transition: none; cursor: grabbing; }
+  .pol img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; background: #d9cfc6; }
+  /* Message + signature */
+  .final-msg { padding: 28px 26px; }
+  .sig-svg { width: min(90vw,520px); height: auto; margin-top: 28px; overflow: visible; }
+  .sig-svg text { font-family: 'Pinyon Script', cursive; font-size: 54px; fill: transparent; stroke: var(--ac); stroke-width: 1.1; }
+  .sig-svg tspan { stroke-dasharray: 420; stroke-dashoffset: 420; }
+  .sig-svg.on tspan { animation: draw 1.5s ease forwards, fillin .8s ease forwards; animation-delay: var(--d), calc(var(--d) + 1.1s); }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes fillin { to { fill: var(--ac); stroke-width: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .rv { opacity: 1; transform: none; transition: none; }
+    #hero > * { transition: none; }
+    .sig-svg tspan { stroke-dashoffset: 0; fill: var(--ac); stroke: none; }
+  }
+  html { scrollbar-width: thin; scrollbar-color: var(--ac) var(--d0); }
+  ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: var(--d0); }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(var(--ac), #ffd27a); border-radius: 8px; }
+  #palette { position: fixed; left: 18px; bottom: 22px; z-index: 40; display: flex; align-items: center; gap: 10px; }
+  #palBtn { width: 40px; height: 40px; border-radius: 50%; background: rgba(20,10,12,.75); backdrop-filter: blur(6px); border: 1px solid rgba(var(--rgb),.4); color: var(--ac); font-size: 1.15rem; cursor: pointer; }
+  #palRow { display: none; gap: 10px; padding: 7px 10px; border-radius: 30px; background: rgba(20,10,12,.75); backdrop-filter: blur(6px); }
+  #palette.open #palRow { display: flex; }
+  .pdot { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(255,255,255,.3); cursor: pointer; }
+  .pdot.on { border-color: #fff; transform: scale(1.15); }
+  #heart { will-change: transform; }
+  .env { position: relative; width: min(78vw,320px); height: min(52vw,214px); margin-top: 26px; cursor: pointer; perspective: 800px; filter: drop-shadow(0 18px 30px rgba(0,0,0,.5)); animation: floaty 3.2s ease-in-out infinite; }
+  @keyframes floaty { 50% { transform: translateY(-8px); } }
+  .env-body { position: absolute; inset: 0; border-radius: 4px; background: linear-gradient(135deg,#efe4d6,#d9c7b3); }
+  .env-body::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top right,transparent 49.6%,rgba(0,0,0,.1) 50%) left/50% 100% no-repeat, linear-gradient(to top left,transparent 49.6%,rgba(0,0,0,.1) 50%) right/50% 100% no-repeat; }
+  .env-flap { position: absolute; left: 0; right: 0; top: 0; height: 58%; z-index: 2; background: linear-gradient(#e3d3bf,#cdb89f); clip-path: polygon(0 0,100% 0,50% 100%); transform-origin: top; transition: transform .8s ease; }
+  .env.open .env-flap { transform: rotateX(180deg); }
+  .env-seal { position: absolute; left: 50%; top: 46%; z-index: 3; transform: translate(-50%,-50%); font-size: 1.7rem; color: var(--ac); text-shadow: 0 0 12px rgba(var(--rgb),.7); transition: opacity .4s; }
+  .env.open .env-seal { opacity: 0; }
+  .lw { display: flex; flex-direction: column; align-items: center; max-width: 100%; }
+  .paper { max-width: 440px; max-height: 70vh; overflow: auto; background: #f7f0e8; color: #3a2226; padding: 30px 26px; border-radius: 4px; text-align: left; font-family: 'EB Garamond', Georgia, serif; font-style: italic; font-size: 1.2rem; line-height: 1.8; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+  .paper .w { opacity: 0; animation: wIn .6s ease forwards; }
+  @keyframes wIn { to { opacity: 1; } }
+</style>
+</head>
+<body class="lock">
+<div id="sky"></div>
+<canvas id="fx"></canvas>
+<div class="halo" id="halo"></div>
+<div id="loader"><div class="ld-half l"></div><div class="ld-half r"></div>
+  <div class="ld-c"><div class="ld-txt">Chargement de vos souvenirs…</div><div class="ld-bar"><i></i></div></div>
+</div>
+<div id="palette"><button id="palBtn" aria-label="Couleurs">◐</button><div id="palRow"></div></div>
+<div class="overlay" id="bonusOv" onclick="this.classList.remove('show')"><div class="overlay-content" id="bonusTxt"></div></div>
+<div class="overlay" id="letterOv"><div class="lw"><div class="paper" id="paper"></div><button class="overlay-close" id="paperClose">fermer</button></div></div>
+<div class="navdots" id="navdots"></div>
+
+<section class="scene" id="hero">
+  <div class="eyebrow">Depuis un appel WhatsApp qui n'aurait jamais dû arriver</div>
+  <h1 class="hero-title">Pour toi lady mon code source préféré </h1>
+  <div class="scroll-hint">faire défiler ↓</div>
+</section>
+
+<section class="scene" id="heartScene">
+  <div class="eyebrow rv">Marius &amp; Alvane </div>
+  <canvas id="heart" width="640" height="560"></canvas>
+  <div class="tap-hint">touche le cœur</div>
+</section>
+
+
+  <section class="scene" id="counterScene">
+    <div class="eyebrow">Depuis le début</div>
+    <div class="big-count" id="bigCount">0</div>
+    <div class="count-label">jours ensemble</div>
+  </section>
+
+
+  <section class="scene" id="gallery">
+    <div class="eyebrow rv">Galerie</div>
+    <h2 class="scene-title rv">Nos images</h2>
+    <div class="stack" id="stack"></div>
+    <div class="tap-hint">glisse ou touche les photos</div>
+  </section>
+
+
+<section class="scene" id="momentsScene">
+  <div class="eyebrow rv">Nos moments</div>
+  <div class="timeline" id="timeline"><div class="tl-line"><i id="tlFill"></i></div></div>
+</section>
+
+
+<section class="scene" id="letterScene">
+  <div class="eyebrow rv">Une lettre pour toi</div>
+  <div class="env" id="env"><div class="env-body"></div><div class="env-flap"></div><div class="env-seal">♥</div></div>
+  <div class="tap-hint">touche l'enveloppe</div>
+</section>
+
+
+<section class="scene" id="finalScene">
+  <div class="eyebrow rv">Pour finir</div><div class="glass final-msg rv">Mileydi
+Je ne vais pas te faire un discours de film. Tu détesterais ça.
+Juste la vérité : avant toi c'était cool, maintenant c'est mieux. T'es ma personne cringe préférée, ma vanneuse officielle, la seule qui arrive à me faire rire et à me faire kiffer d'être à distance en même temps.
+Ce site c'est rien comparé à ce que j'ai envie de construire avec toi. On n'a même pas encore fait le plus important : se voir pour de vrai. Et j'ai zéro doute que quand ça va arriver, ça va être encore plus fort que maintenant.
+Je t'aime. À ma façon.</div>
+  <svg class="sig-svg" id="sigSvg" viewBox="0 0 700 110"><text id="sigText" x="350" y="72" text-anchor="middle"></text></svg>
+</section>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-content">Arrête de me menacer </div>
+</div>
+<script>document.getElementById('overlay').innerHTML += '<button class="overlay-close" onclick="document.getElementById(\'overlay\').classList.remove(\'show\')">fermer</button>';</script>
+
+
+  <audio id="bgm" loop></audio>
+  <div id="musicControls">
+    <button id="musicToggle" aria-label="Musique">♪ Musique</button>
+    <button id="musicNext" aria-label="Piste suivante">⇥</button>
+  </div>
+  
+
+<script>
+// ---- Cœur qui s'assemble ----
+const words = ["Alvane","My lady","je t'aime","ma vanneuse préférée","mon garçon manqué","tatouée dans ma tête","ma cringe queen","à distance mais proche","Alvane "];
+let ACCENT = "#2ee59d";
+const canvas = document.getElementById('heart');
+const ctx = canvas.getContext('2d');
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return [r,g,b];
+}
+let [R,G,B] = hexToRgb(ACCENT);
+
+function isInsideHeart(x, y) {
+  const eq = Math.pow(x*x + y*y - 1, 3) - x*x*y*y*y;
+  return eq <= 0;
+}
+
+const W = canvas.width, H = canvas.height;
+const scale = Math.min(W, H) / 2.6;
+const cx = W / 2, cy = H / 2 + 40;
+
+let particles = [];
+const target = 170;
+let attempts = 0;
+while (particles.length < target && attempts < 20000) {
+  attempts++;
+  const nx = (Math.random() * 2.6 - 1.3);
+  const ny = (Math.random() * 2.4 - 1.2);
+  if (isInsideHeart(nx, ny)) {
+    const tx = cx + nx * scale;
+    const ty = cy - ny * scale;
+    const size = 10 + Math.random() * 8;
+    const word = words[Math.floor(Math.random() * words.length)];
+
+    // Pré-rendu offscreen (glow calculé une seule fois)
+    const off = document.createElement('canvas');
+    const pad = 40;
+    off.width = size * word.length * 0.62 + pad;
+    off.height = size * 2 + pad;
+    const octx = off.getContext('2d');
+    octx.font = size + 'px Georgia, serif';
+    octx.textAlign = 'center';
+    octx.textBaseline = 'middle';
+    octx.shadowColor = `rgba(${R},${G},${B},0.95)`;
+    octx.shadowBlur = 14;
+    octx.fillStyle = `rgba(${Math.min(255,R+40)},${G},${B},1)`;
+    octx.fillText(word, off.width/2, off.height/2);
+
+    particles.push({ word, size,
+      sx: Math.random() * W, sy: Math.random() * H * 0.6 + H * 0.7 * Math.random() * -1 + Math.random()*H,
+      tx, ty,
+      off, w: off.width, h: off.height,
+      delay: Math.random() * 500,
+      dur: 1500 + Math.random() * 900,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.0016 + Math.random() * 0.0012
+    });
+  }
+}
+// positions de départ dispersées sur tout l'écran (au-delà du canvas aussi, visuellement via clamp)
+particles.forEach(p => {
+  p.sx = Math.random() * W;
+  p.sy = Math.random() * H;
+});
+
+function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+
+let start = null;
+let assembled = false;
+
+function frame(now) {
+  if (!start) start = now;
+  const t = now - start;
+  ctx.clearRect(0, 0, W, H);
+  let allDone = true;
+  for (const p of particles) {
+    const localT = t - p.delay;
+    let x, y, alpha;
+    if (localT <= 0) {
+      x = p.sx; y = p.sy; alpha = 0;
+      allDone = false;
+    } else if (localT < p.dur) {
+      const e = easeOutCubic(localT / p.dur);
+      x = p.sx + (p.tx - p.sx) * e;
+      y = p.sy + (p.ty - p.sy) * e;
+      alpha = e;
+      allDone = false;
+    } else {
+      const flicker = 0.6 + 0.4 * Math.sin(t * p.speed + p.phase);
+      x = p.tx; y = p.ty; alpha = flicker;
+    }
+    ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+    ctx.drawImage(p.off, x - p.w/2, y - p.h/2);
+  }
+  ctx.globalAlpha = 1;
+  if (allDone && !assembled) assembled = true;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+function resizeCanvas() {
+  const maxW = Math.min(640, window.innerWidth * 0.92);
+  const ratio = maxW / 640;
+  canvas.style.width = maxW + 'px';
+  canvas.style.height = (560 * ratio) + 'px';
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// ---- Clic = message caché + confettis ----
+const secretText = "Arrête de me menacer ";
+if (secretText) {
+  canvas.addEventListener('click', (e) => {
+    document.getElementById('overlay').classList.add('show');
+    burstConfetti(e.clientX, e.clientY);
+  });
+}
+
+function burstConfetti(x, y) {
+  const colors = [ACCENT, '#ffd27a', '#ff8fa3', '#fff'];
+  for (let i = 0; i < 36; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    document.body.appendChild(el);
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 80 + Math.random() * 140;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist - 40;
+    el.animate([
+      { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
+      { transform: `translate(${dx}px, ${dy + 160}px) rotate(${Math.random()*360}deg)`, opacity: 0 }
+    ], { duration: 1100 + Math.random()*500, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    setTimeout(() => el.remove(), 1700);
+  }
+}
+
+
+// ================= v5 =================
+const PAL = {"rose":{"ac":"#ff00ff","d0":"#0a0506","d1":"#170a0d","d2":"#1c0a0e","tx":"#fdece8","tx2":"#f5ece6","mu":"#b98a8a","mu2":"#d8c3c3","c1":[[10,5,6],[48,16,22]],"c2":[[23,10,13],[92,34,40]],"glow":[[255,80,60],[255,170,80]]},"emeraude":{"ac":"#2ee59d","d0":"#050a08","d1":"#0a1712","d2":"#0c1c15","tx":"#e8fdf3","tx2":"#e6f5ee","mu":"#8ab9a4","mu2":"#c3d8cf","c1":[[5,10,8],[14,48,36]],"c2":[[10,23,18],[30,92,70]],"glow":[[60,255,170],[180,255,120]]},"violet":{"ac":"#a974ff","d0":"#07050d","d1":"#110a1c","d2":"#150c24","tx":"#f1e8fd","tx2":"#ece6f5","mu":"#a38ab9","mu2":"#cfc3d8","c1":[[8,5,14],[30,16,52]],"c2":[[16,10,26],[62,34,98]],"glow":[[200,90,255],[255,140,200]]},"ambre":{"ac":"#ffb347","d0":"#0a0805","d1":"#17110a","d2":"#1c140a","tx":"#fdf3e0","tx2":"#f5eee0","mu":"#b9a07a","mu2":"#d8ccb4","c1":[[10,8,5],[48,34,14]],"c2":[[23,17,10],[92,64,28]],"glow":[[255,150,40],[255,210,90]]}};
+let curPal = "emeraude";
+const hexTo = h => [1,3,5].map(i => parseInt(h.slice(i,i+2),16));
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const lerp = (a,b,p) => a + (b-a)*p;
+
+// ---- Chargement + rideau ----
+const loader = document.getElementById('loader');
+function openCurtain() {
+  loader.classList.add('open');
+  document.body.classList.remove('lock');
+  setTimeout(() => document.body.classList.add('go'), 500);
+  setTimeout(() => loader.remove(), 2000);
+}
+if (REDUCED) { loader.remove(); document.body.classList.remove('lock'); document.body.classList.add('go'); }
+else setTimeout(openCurtain, 2700);
+
+// ---- Braises flottantes ----
+const fx = document.getElementById('fx'), fc = fx.getContext('2d');
+let FW, FH;
+function fxSize() { FW = fx.width = innerWidth; FH = fx.height = innerHeight; }
+fxSize(); addEventListener('resize', fxSize);
+const sprite = document.createElement('canvas'); sprite.width = sprite.height = 32;
+function paintSprite() {
+  const sc = sprite.getContext('2d'); sc.clearRect(0,0,32,32);
+  const sg = sc.createRadialGradient(16,16,0,16,16,16);
+  sg.addColorStop(0, 'rgba(255,214,150,1)');
+  sg.addColorStop(.35, 'rgba(' + R + ',' + G + ',' + B + ',.55)');
+  sg.addColorStop(1, 'rgba(' + R + ',' + G + ',' + B + ',0)');
+  sc.fillStyle = sg; sc.fillRect(0,0,32,32);
+}
+paintSprite();
+const embers = Array.from({length: 42}, () => ({
+  x: Math.random()*innerWidth, y: Math.random()*innerHeight,
+  s: 6 + Math.random()*14, v: .15 + Math.random()*.45, a: .15 + Math.random()*.5,
+  p: Math.random()*6.28, w: .0006 + Math.random()*.001
+}));
+function drawFx(t) {
+  fc.clearRect(0,0,FW,FH);
+  for (const e of embers) {
+    e.y -= e.v; e.x += Math.sin(t*e.w + e.p) * .35;
+    if (e.y < -20) { e.y = FH + 20; e.x = Math.random()*FW; }
+    fc.globalAlpha = e.a * (.6 + .4*Math.sin(t*.002 + e.p));
+    fc.drawImage(sprite, e.x - e.s, e.y - e.s, e.s*2, e.s*2);
+  }
+  requestAnimationFrame(drawFx);
+}
+if (!REDUCED) requestAnimationFrame(drawFx);
+
+// ---- Ciel qui se réchauffe au scroll + timeline ----
+const sky = document.getElementById('sky');
+const moments = [{"titre":"Le début, on s'en fout un peu","texte":"On s'est croisés sur un appel WhatsApp, au hasard. C'était il y a longtemps. Ce n'est plus vraiment important."},{"titre":"Ce qui compte, c'est maintenant","texte":"C'est ce qu'on vit là, à distance. Sans jamais s'être vus, mais en étant là l'un pour l'autre tous les jours. C'est ça le vrai truc."},{"titre":"Et surtout, c'est la suite","texte":"Le jour où on va se voir, et tout ce qu'on va construire après. C'est ça qui m'intéresse. Le reste c'est juste l'intro."}];
+const tl = document.getElementById('timeline');
+if (tl) moments.forEach(m => {
+  const d = document.createElement('div');
+  d.className = 'moment glass rv';
+  d.innerHTML = '<h3>' + m.titre + '</h3><p>' + m.texte + '</p>';
+  tl.appendChild(d);
+});
+function timelineUpdate() {
+  if (!tl) return;
+  const r = tl.getBoundingClientRect(), line = innerHeight * .6;
+  document.getElementById('tlFill').style.height = clamp((line - r.top) / r.height, 0, 1) * 100 + '%';
+  tl.querySelectorAll('.moment').forEach(m => m.classList.toggle('lit', m.getBoundingClientRect().top < line));
+}
+function onScroll() {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  const p = max > 0 ? clamp(scrollY / max, 0, 1) : 0;
+  const P = PAL[curPal], mix = (a,b) => a.map((v,k) => Math.round(lerp(v,b[k],p)));
+  const c1 = mix(P.c1[0],P.c1[1]), c2 = mix(P.c2[0],P.c2[1]), g = mix(P.glow[0],P.glow[1]);
+  sky.style.background = 'radial-gradient(ellipse at 50% ' + (125 - p*25) + '%, rgba(' + g + ',' + (0.1 + p*0.38).toFixed(2) + ') 0%, transparent 62%), linear-gradient(rgb(' + c1 + '), rgb(' + c2 + '))';
+  timelineUpdate();
+}
+addEventListener('scroll', onScroll, { passive: true });
+addEventListener('resize', onScroll);
+onScroll();
+
+// ---- Apparitions ----
+const rvObs = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('in'); rvObs.unobserve(e.target); }
+}), { threshold: .15 });
+document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+
+// ---- Signature écrite au stylo ----
+const sigText = document.getElementById('sigText');
+if (sigText) {
+  "Ton Bisounours ".split('').forEach((ch, i) => {
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+    t.textContent = ch === ' ' ? String.fromCharCode(160) : ch;
+    t.style.setProperty('--d', (i * 0.13).toFixed(2) + 's');
+    sigText.appendChild(t);
+  });
+  const svg = document.getElementById('sigSvg');
+  new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { svg.classList.add('on'); o.disconnect(); } }, { threshold: .6 }).observe(svg);
+}
+
+// ---- Halo lumineux ----
+const halo = document.getElementById('halo');
+let hx = innerWidth/2, hy = innerHeight/2, hX = hx, hY = hy;
+function moveHalo(x, y) { hX = x; hY = y; halo.style.opacity = 1; }
+addEventListener('pointermove', e => moveHalo(e.clientX, e.clientY));
+addEventListener('touchmove', e => { const t = e.touches[0]; if (t) moveHalo(t.clientX, t.clientY); }, { passive: true });
+addEventListener('touchend', () => { halo.style.opacity = 0; });
+(function haloLoop() {
+  hx += (hX - hx) * .18; hy += (hY - hy) * .18;
+  halo.style.transform = 'translate(' + hx + 'px,' + hy + 'px)';
+  requestAnimationFrame(haloLoop);
+})();
+
+// ---- Polaroids à swiper ----
+const photos = ["https://cdn.jsdelivr.net/gh/bemd-2005/for-you@e0c3c268f3e6307443f64e461dc8d2599b393304/.trashed-1791276932-IMG-20260905-WA0246.jpg","https://cdn.jsdelivr.net/gh/bemd-2005/for-you@e0c3c268f3e6307443f64e461dc8d2599b393304/.trashed-1791276773-IMG-20260905-WA0140.jpg","https://cdn.jsdelivr.net/gh/bemd-2005/for-you@e0c3c268f3e6307443f64e461dc8d2599b393304/IMG-20260926-WA0109.jpg","https://cdn.jsdelivr.net/gh/bemd-2005/for-you@e0c3c268f3e6307443f64e461dc8d2599b393304/IMG-20260926-WA0114.jpg","https://cdn.jsdelivr.net/gh/bemd-2005/for-you@e0c3c268f3e6307443f64e461dc8d2599b393304/IMG-20260927-WA0069.jpg","https://cdn.jsdelivr.net/gh/bemd-2005/for-you@e0c3c268f3e6307443f64e461dc8d2599b393304/IMG-20261003-WA0126.jpg","https://cdn.jsdelivr.net/gh/bemd-2005/for-you@e0c3c268f3e6307443f64e461dc8d2599b393304/IMG-20260807-WA0000.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260502-WA0015.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0451.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0456.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0458.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0459.jpg","https://raw.githubusercontent.com/bemd-2005/for-you/main/IMG-20260623-WA0464.jpg"];
+const stack = document.getElementById('stack');
+if (stack && photos.length) {
+  const rots = photos.map((_, i) => ((i * 37) % 13) - 6);
+  const cards = photos.map(src => {
+    const c = document.createElement('div'); c.className = 'pol';
+    const im = document.createElement('img'); im.src = src; im.alt = ''; im.draggable = false;
+    im.onerror = () => { im.style.visibility = 'hidden'; };
+    c.appendChild(im); stack.appendChild(c); return c;
+  });
+  let order = photos.map((_, i) => i), drag = null, sx = 0, dx = 0;
+  function layout() {
+    cards.forEach((c, i) => {
+      const k = order.indexOf(i);
+      c.style.zIndex = photos.length - k;
+      c.style.opacity = k < 4 ? 1 : 0;
+      c.style.transform = 'translate(' + (k ? rots[i]*2.5 : 0) + 'px,' + Math.min(k,3)*5 + 'px) rotate(' + (k ? rots[i] : rots[i]/2) + 'deg)';
+    });
+  }
+  layout();
+  stack.addEventListener('pointerdown', e => {
+    drag = cards[order[0]]; sx = e.clientX; dx = 0;
+    drag.classList.add('drag'); stack.setPointerCapture(e.pointerId);
+  });
+  stack.addEventListener('pointermove', e => {
+    if (!drag) return;
+    dx = e.clientX - sx;
+    drag.style.transform = 'translate(' + dx + 'px,0) rotate(' + (rots[order[0]] + dx/14) + 'deg)';
+  });
+  const end = e => {
+    if (!drag) return;
+    const c = drag; drag = null; c.classList.remove('drag');
+    const cancel = e.type === 'pointercancel';
+    if (!cancel && (Math.abs(dx) > 70 || Math.abs(dx) < 6)) {
+      const dir = dx < 0 ? -1 : 1;
+      c.style.transform = 'translate(' + dir*420 + 'px,0) rotate(' + dir*24 + 'deg)';
+      c.style.opacity = 0;
+      setTimeout(() => { order.push(order.shift()); layout(); }, 380);
+    } else layout();
+  };
+  stack.addEventListener('pointerup', end);
+  stack.addEventListener('pointercancel', end);
+}
+
+// ---- Navigation par points ----
+const scenes = document.querySelectorAll('.scene');
+const navWrap = document.getElementById('navdots');
+scenes.forEach((s, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'navdot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => s.scrollIntoView({ behavior: 'smooth' }));
+  navWrap.appendChild(dot);
+});
+const navDots = navWrap.querySelectorAll('.navdot');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = [...scenes].indexOf(entry.target);
+      navDots.forEach((d,i) => d.classList.toggle('active', i === idx));
+    }
+  });
+}, { threshold: 0.55 });
+scenes.forEach(s => io.observe(s));
+
+// ---- Compteur de jours animé ----
+const bigCount = document.getElementById('bigCount');
+const targetDays = 107;
+if (bigCount) {
+  let counted = false;
+  const counterObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !counted) {
+        counted = true;
+        const dur = 1400;
+        const t0 = performance.now();
+        function step(now) {
+          const p = Math.min(1, (now - t0) / dur);
+          bigCount.textContent = Math.floor(p * targetDays);
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+    });
+  }, { threshold: 0.5 });
+  counterObs.observe(bigCount.closest('.scene'));
+}
+
+// ---- Traînée de cœurs (souris + tactile) ----
+let lastTrail = 0;
+function spawnHeart(x, y) {
+  const now = performance.now();
+  if (now - lastTrail < 55) return;
+  lastTrail = now;
+  const el = document.createElement('div');
+  el.className = 'heart-trail';
+  el.textContent = '♥';
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 950);
+}
+window.addEventListener('pointermove', (e) => spawnHeart(e.clientX, e.clientY));
+window.addEventListener('touchmove', (e) => {
+  const t = e.touches[0];
+  if (t) spawnHeart(t.clientX, t.clientY);
+}, { passive: true });
+
+// ================= v6 =================
+function repaintHeart() {
+  particles.forEach(p => {
+    const o = p.off, c = o.getContext('2d');
+    c.clearRect(0,0,o.width,o.height);
+    c.font = p.size + 'px Georgia, serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.shadowColor = 'rgba(' + R + ',' + G + ',' + B + ',0.95)'; c.shadowBlur = 14;
+    c.fillStyle = 'rgba(' + Math.min(255,R+40) + ',' + G + ',' + B + ',1)';
+    c.fillText(p.word, o.width/2, o.height/2);
+  });
+}
+function applyPalette(name, save) {
+  const p = PAL[name]; if (!p) return;
+  curPal = name;
+  const rs = document.documentElement.style;
+  Object.keys(p).forEach(k => { if (typeof p[k] === 'string') rs.setProperty('--' + k, p[k]); });
+  rs.setProperty('--rgb', hexTo(p.ac).join(','));
+  ACCENT = p.ac;
+  const t = hexTo(p.ac); R = t[0]; G = t[1]; B = t[2];
+  paintSprite(); repaintHeart(); onScroll();
+  document.querySelectorAll('.pdot').forEach(d => d.classList.toggle('on', d.dataset.p === name));
+  if (save) { try { localStorage.setItem('pal', name); } catch (e) {} }
+}
+const palRow = document.getElementById('palRow');
+Object.keys(PAL).forEach(k => {
+  const d = document.createElement('button');
+  d.className = 'pdot'; d.dataset.p = k; d.style.background = PAL[k].ac; d.setAttribute('aria-label', k);
+  d.onclick = () => applyPalette(k, true);
+  palRow.appendChild(d);
+});
+document.getElementById('palBtn').onclick = () => document.getElementById('palette').classList.toggle('open');
+let savedPal = null; try { savedPal = localStorage.getItem('pal'); } catch (e) {}
+applyPalette(PAL[savedPal] ? savedPal : curPal, false);
+
+// ---- Cœur qui pulse avec la musique ----
+let actx, an, adata, beat = 0;
+function setupAudio() {
+  const a = document.getElementById('bgm');
+  if (!a || actx || window.noAn) return;
+  try {
+    actx = new (window.AudioContext || window.webkitAudioContext)();
+    const s = actx.createMediaElementSource(a);
+    an = actx.createAnalyser(); an.fftSize = 64;
+    s.connect(an); an.connect(actx.destination);
+    adata = new Uint8Array(an.frequencyBinCount);
+  } catch (e) { an = null; }
+}
+function pulseLoop(t) {
+  const a = document.getElementById('bgm'), on = a && !a.paused;
+  let lvl = 0, real = false;
+  if (an && on) {
+    an.getByteFrequencyData(adata);
+    let s = 0; for (let i = 0; i < 6; i++) s += adata[i];
+    lvl = s / 1530; real = lvl > 0.01;
+    if (real) lvl = Math.min(1, lvl * 1.5);
+  }
+  if (!real) lvl = Math.pow(Math.max(0, Math.sin(t * .0045)), 6) * (on ? .8 : .35);
+  beat += (lvl - beat) * .35;
+  canvas.style.transform = 'scale(' + (1 + beat * .08).toFixed(3) + ')';
+  requestAnimationFrame(pulseLoop);
+}
+if (!REDUCED) requestAnimationFrame(pulseLoop);
+
+// ---- Enveloppe + lettre animée ----
+const LETTRE = "Alvane,\n\nJe repense encore à ce fameux appel de groupe WhatsApp. On ne se connaissait pas, on a parlé 5 minutes au milieu de tout le monde, puis plus rien. Et un mois après, on a recommencé. Comme si on devait se rater une première fois pour mieux se retrouver après.\n\nCe que j'aime chez toi, c'est que tu sors de l'ordinaire. Ton petit côté cringe que tu assumes à fond, ton côté garçon manqué, ton délire avec les tatouages, et surtout ta façon de me vanner non-stop. Tu n'es pas la meuf ultra romantique des films, et c'est pour ça que je t'aime. T'es vraie.\n\nOn ne s'est même jamais vus en vrai et pourtant t'as pris une place de fou dans ma vie. J'ai tellement hâte du jour où on va enfin se voir. Je sais que ça sera encore mieux que tout ce qu'on vit à distance.\n";
+const env = document.getElementById('env');
+if (env) {
+  env.onclick = () => {
+    if (env.classList.contains('open')) return;
+    env.classList.add('open');
+    setTimeout(() => {
+      const paper = document.getElementById('paper'); paper.innerHTML = '';
+      LETTRE.replace(/\n/g, ' <br> ').split(/\s+/).forEach((w, i) => {
+        if (w === '<br>') { paper.appendChild(document.createElement('br')); return; }
+        const s = document.createElement('span'); s.className = 'w';
+        s.innerHTML = w + ' '; s.style.animationDelay = Math.min(i * 0.07, 8) + 's';
+        paper.appendChild(s);
+      });
+      document.getElementById('letterOv').classList.add('show');
+    }, 800);
+  };
+  document.getElementById('paperClose').onclick = () => {
+    document.getElementById('letterOv').classList.remove('show'); env.classList.remove('open');
+  };
+}
+
+// ---- Easter egg : triple-tap sur le titre ----
+const BONUS = "Bien joué Miley, t'as trouvé le passage secret. Tu fouilles partout comme d'hab. Reste comme ça, curieuse et chiante, c'est ma version préférée de toi.";
+if (BONUS) {
+  document.getElementById('bonusTxt').innerHTML = BONUS;
+  let taps = [];
+  document.querySelector('.hero-title').addEventListener('click', e => {
+    const n = Date.now(); taps = taps.filter(t => n - t < 700); taps.push(n);
+    if (taps.length >= 3) { taps = []; document.getElementById('bonusOv').classList.add('show'); burstConfetti(e.clientX, e.clientY); }
+  });
+}
+
+// ---- Musique (playlist) ----
+const playlist = ["https://cdn.jsdelivr.net/gh/bemd-2005/for-you@33aeaa195683126eada56ba0d0e1a9aeb608c880/Home_-_Edith_Whiskers_%5BTraduction_FR_%5D(256k).mp3","https://raw.githubusercontent.com/bemd-2005/for-you/main/86_EIGHTY-SIX_-_Ending_Full%E3%80%8EAvid%E3%80%8Fby_SawanoHiroyuki%5BnZk%5D_mizuki(256k).mp3","https://raw.githubusercontent.com/bemd-2005/for-you/main/Adele_-_Love_In_The_Dark__Lyrics_(256k).mp3"];
+const bgm = document.getElementById('bgm');
+const musicBtn = document.getElementById('musicToggle');
+const nextBtn = document.getElementById('musicNext');
+if (bgm && musicBtn && playlist.length) {
+  let track = 0;
+  let playing = false;
+  bgm.crossOrigin = 'anonymous';
+  bgm.addEventListener('error', () => { if (bgm.crossOrigin) { window.noAn = 1; bgm.removeAttribute('crossorigin'); bgm.src = playlist[track]; if (playing) bgm.play().catch(()=>{}); } });
+  bgm.src = playlist[0];
+  bgm.addEventListener('ended', () => {
+    track = (track + 1) % playlist.length;
+    bgm.src = playlist[track];
+    if (playing) bgm.play().catch(()=>{});
+  });
+  musicBtn.addEventListener('click', () => {
+    if (playing) { bgm.pause(); musicBtn.textContent = '♪ Musique'; }
+    else { setupAudio(); if (actx && actx.state === 'suspended') actx.resume(); bgm.play().catch(()=>{}); musicBtn.textContent = '❙❙ Pause'; }
+    playing = !playing;
+  });
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      track = (track + 1) % playlist.length;
+      bgm.src = playlist[track];
+      if (playing) bgm.play().catch(()=>{});
+    });
+  }
+}
+</script>
+</body>
+</html>
