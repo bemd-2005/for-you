@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Joyeux anniversaire</title>
+<script>
+// Actif uniquement le 17 novembre (ou avec ?anniv=1 pour tester). Sinon retour au site normal.
+(function(){var d=new Date();if(!(d.getMonth()==10&&d.getDate()==17)&&!/anniv=1/.test(location.search))location.replace('./');})();
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@500&family=EB+Garamond&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#e8c39e;--r:#ff4d6d}
+html{scroll-snap-type:y proximity;scroll-behavior:smooth}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--r);border-radius:3px}
+body{font-family:'EB Garamond',Georgia,serif;color:#fbeee8;background:radial-gradient(ellipse at top,#3a1220,#1a0a10 60%,#0b0508);background-attachment:fixed}
+section{min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:70px 20px;position:relative;z-index:2;scroll-snap-align:start}
+.ey{font-size:.78rem;letter-spacing:4px;text-transform:uppercase;color:var(--g);margin-bottom:12px}
+h1,h2{font-family:'Playfair Display',serif;font-weight:500}
+h1{font-size:clamp(2.2rem,8vw,3.6rem)}
+h2{font-size:clamp(1.5rem,5vw,2.1rem);margin-bottom:14px}
+.nm{font-family:'Great Vibes',cursive;font-size:clamp(3.4rem,15vw,6rem);color:var(--r);text-shadow:0 0 28px #ff4d6d88;line-height:1.1;display:block}
+.cd{margin-top:22px;padding:9px 20px;border:1px solid #e8c39e66;border-radius:30px;font-size:.85rem;letter-spacing:1px;color:var(--g)}
+.ct{margin-top:14px;color:#d8b8b8;font-size:1rem}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .9s,transform .9s}.rv.in{opacity:1;transform:none}
+#gate{position:fixed;inset:0;z-index:100;background:#12060a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:30px;cursor:pointer;transition:opacity .8s}
+#gate .gi{font-size:4.5rem;animation:pu 1.6s ease-in-out infinite}
+@keyframes pu{50%{transform:scale(1.15) rotate(-4deg)}}
+#gate.out{opacity:0;pointer-events:none}
+#fx{position:fixed;inset:0;z-index:60;pointer-events:none}
+#bunt{position:fixed;top:0;left:0;width:100%;height:70px;z-index:30;pointer-events:none}
+.b{position:fixed;bottom:-130px;width:44px;height:56px;border-radius:50% 50% 48% 48%;z-index:1;pointer-events:none;opacity:.75;animation:up linear infinite}
+.b:after{content:'';position:absolute;left:50%;top:100%;width:1px;height:50px;background:#ffffff55}
+@keyframes up{to{transform:translateY(-125vh) translateX(30px)}}
+canvas#hc{max-width:92vw}
+.cake{width:min(86vw,340px);cursor:pointer}
+.fl{fill:#ffb347;transform-origin:center;transform-box:fill-box;animation:fk .35s ease-in-out infinite alternate;transition:opacity .5s}
+@keyframes fk{to{transform:scale(.8,1.12) rotate(4deg)}}
+.cake.off .fl{opacity:0}
+.btn{margin-top:14px;background:none;border:1px solid var(--r);color:var(--r);padding:10px 22px;border-radius:30px;font:inherit;cursor:pointer;letter-spacing:1px}
+.gifts{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;max-width:620px}
+.gift{width:170px;min-height:150px;border:1px solid #e8c39e55;border-radius:14px;background:#ffffff0d;backdrop-filter:blur(6px);padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.98rem;line-height:1.5;color:#fbeee8}
+.gift .e{font-size:3rem;transition:transform .4s}.gift.open .e{display:none}.gift p{display:none}.gift.open p{display:block;animation:fi .8s}
+@keyframes fi{from{opacity:0;transform:scale(.9)}}
+.env{width:230px;height:150px;background:#8c1f2c;border-radius:8px;position:relative;cursor:pointer;box-shadow:0 14px 40px #0008;font-size:3rem;display:flex;align-items:center;justify-content:center}
+.env.open{display:none}
+.letter{display:none;max-width:480px;background:#fff6ee;color:#3a1a22;padding:28px 26px;border-radius:6px;text-align:left;font-size:1.12rem;line-height:1.75;white-space:pre-line;box-shadow:0 20px 60px #000a;animation:fi 1s}
+.letter.show{display:block}
+.pol{display:flex;flex-wrap:wrap;justify-content:center;max-width:560px}
+.pol figure{width:43vw;max-width:190px;background:#fff;padding:8px 8px 26px;margin:-4px;box-shadow:0 8px 24px #0009;transform:rotate(var(--a));transition:transform .4s;cursor:pointer}
+.pol figure.on{transform:rotate(0) scale(1.18);z-index:5}
+.pol img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.wall{display:flex;flex-direction:column;gap:12px;max-width:460px}
+.card{background:#ffffff10;border-left:3px solid var(--r);padding:14px 16px;border-radius:8px;text-align:left}
+.card b{color:var(--g);display:block;margin-bottom:4px}
+#ov{position:fixed;inset:0;z-index:80;background:#0a0406ee;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px;text-align:center;font-size:1.3rem;line-height:1.8;font-style:italic;opacity:0;pointer-events:none;transition:opacity .5s}
+#ov.show{opacity:1;pointer-events:auto}
+#ctl{position:fixed;right:16px;bottom:16px;z-index:40;display:flex;gap:8px}
+#ctl button{background:#140a0ecc;border:1px solid #ff4d6d77;color:var(--r);padding:10px 16px;border-radius:30px;font:inherit;cursor:pointer}
+.nm{background:linear-gradient(90deg,var(--r),#ffd27a,#fff,#ffd27a,var(--r));background-size:250%;-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 14px #ff4d6d88);animation:sh 5s linear infinite}
+@keyframes sh{to{background-position:250%}}
+@keyframes sp{to{transform:translateY(-40px) scale(.3) rotate(120deg);opacity:0}}
+.wall{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:640px;margin-top:18px}
+@media(max-width:520px){.wall{grid-template-columns:1fr}}
+.dc{display:none;max-width:420px;margin:18px auto 0;font-style:italic;font-size:1.3rem;color:var(--g);animation:fi .8s}
+#opt{display:none;position:fixed;right:16px;bottom:70px;z-index:41;background:#140a0eee;border:1px solid #ff4d6d55;border-radius:12px;padding:12px 14px;line-height:2}
+#opt.show{display:block}#opt input{margin-right:8px}
+.nb .b{display:none}
+</style></head><body>
+<div id="gate"><div class="gi">🎁</div><div class="ey" id="gt"></div><div style="color:#b98a8a">touche pour ouvrir</div></div>
+<canvas id="fx"></canvas><svg id="bunt"></svg>
+<div id="ctl"><button id="mb">♪</button><button id="mn" style="display:none">⇥</button><button id="fwb">🎆</button><button id="ob">⚙</button></div>
+<div id="opt"><label><input type="checkbox" id="o1" checked>Ballons</label><br><label><input type="checkbox" id="o2" checked>Étincelles</label><br><label><input type="checkbox" id="o3">Thème doré</label></div>
+<audio id="au"></audio>
+
+<section id="hero">
+ <div class="ey">17 novembre</div>
+ <h1 class="rv">Joyeux anniversaire<span class="nm" id="n1"></span></h1>
+ <div class="cd rv">Cette surprise disparaît dans <b id="cd"></b></div>
+ <div class="ct rv" id="age"></div>
+</section>
+<section><div class="ey">Pour toi</div><canvas id="hc" width="640" height="560"></canvas></section>
+<section><div class="ey">Fais un vœu</div><h2 class="rv">Souffle les bougies</h2>
+ <svg class="cake" id="ck" viewBox="0 0 300 250">
+  <ellipse cx="150" cy="226" rx="132" ry="14" fill="#3a1a22"/>
+  <rect x="40" y="150" width="220" height="72" rx="10" fill="#d9577a"/><rect x="40" y="150" width="220" height="16" rx="8" fill="#ffe3ea"/>
+  <rect x="75" y="95" width="150" height="58" rx="10" fill="#f08aa3"/><rect x="75" y="95" width="150" height="14" rx="7" fill="#fff0f3"/>
+  <g id="cs"></g>
+ </svg>
+ <button class="btn" id="mic">🎤 Souffler au micro</button><div class="ct" id="mt" style="font-size:.85rem">ou touche le gâteau</div>
+</section>
+<section><div class="ey">Des cadeaux</div><h2 class="rv">Ouvre-les</h2><div class="gifts" id="gf"></div></section>
+<section><div class="ey">Une lettre</div><div class="env" id="ev">💌</div><div class="letter" id="lt"></div></section>
+<section id="gal"><div class="ey">Souvenirs</div><h2>Nous</h2><div class="pol" id="pl"></div></section>
+<section id="wl" style="display:none"><div class="ey">Mes vœux pour toi</div><h2>30 vœux, rien que pour toi</h2><button class="btn" id="dw">✨ Tire un vœu</button><div class="dc" id="dc"></div><div class="wall" id="wb"></div></section>
+<section><div class="ey">Joyeux anniversaire</div><span class="nm" id="n2"></span><div class="ct" id="sg"></div></section>
+<div id="ov"><div id="sc"></div><button class="btn" id="cl">fermer</button></div>
+
+<script>
+const C={
+ nom:"Alvane", signature:"Marius",
+ naissance:"2009-11-17", // ex : "2004-11-17" pour afficher l'âge et le nombre de jours vécus
+ photos:["IMG-20260502-WA0015.jpg","IMG-20260623-WA0451.jpg","IMG-20260623-WA0456.jpg","IMG-20260623-WA0458.jpg","IMG-20260623-WA0459.jpg","IMG-20260623-WA0464.jpg"],
+ musique:["Anne-Marie_-_BIRTHDAY_%5BOfficial_Video%5D(256k).mp3","Adele_-_Love_In_The_Dark__Lyrics_(256k).mp3"],
+ cadeaux:["Un câlin géant, valable dès qu'on se retrouve. Sans date limite.","Un appel rien que pour toi, quand tu veux et aussi longtemps que tu veux.","Un vrai cadeau à ouvrir en vrai, bientôt. Patience, My Lady."],
+ voeux:["Que cette année t'apporte des sourires du matin au soir.","Que tous tes projets prennent vie, un par un.","Que tu gardes toujours cette douceur qui te rend unique.","Que la réussite te suive partout où tu vas.","Que chaque journée te réserve une petite surprise.","Que tu rires aux éclats, souvent, et sans raison.","Que la chance soit toujours de ton côté.","Que tu sois entourée de gens qui t'aiment vraiment.","Que tes rêves les plus fous deviennent des plans.","Que la distance rétrécisse chaque jour un peu plus.","Que tu croies en toi autant que je crois en toi.","Que ta santé soit solide et ton cœur léger.","Que tu trouves la paix dans les jours difficiles.","Que tes nuits soient calmes et tes réveils joyeux.","Que tu oses tout ce qui te fait peur.","Que ta lumière éclaire tout ce que tu touches.","Que tu gardes ton rire, il est précieux.","Que chaque projet commencé se termine en beauté.","Que tu reçoives autant d'amour que tu en donnes.","Que cette année soit la plus belle jusqu'ici.","Que tu sois fière de la personne que tu deviens.","Que les mauvais jours passent vite et les bons restent longtemps.","Que tu voyages, que tu découvres, que tu t'émerveilles.","Que ton sourire ne perde jamais son éclat.","Que tu te souviennes que tu mérites le meilleur.","Que nos appels durent toujours plus longtemps que prévu.","Que tes talents soient vus et reconnus.","Que tu aies le courage de rester toi-même.","Que chaque jour te rapproche de la vie que tu veux.","Joyeux anniversaire, My Lady. Que ce jour soit à ta hauteur."].map(t=>({de:"Marius",t}))
+};
+C.secret="Fais un vœu, "+C.nom+". Que cette nouvelle année te ressemble : lumineuse. Joyeux anniversaire, My Lady.";
+C.lettre="Joyeux anniversaire, "+C.nom+".\n\nLa distance ne m'empêche pas de penser à toi aujourd'hui, et ce site est ma façon d'être là malgré tout. Je voulais que ce jour soit à ton image : lumineux, doux et unique.\n\nQue cette nouvelle année t'apporte de la joie, de la réussite et toutes les belles choses que tu mérites.\n\nMerci d'être toi.\n\n"+C.signature;
+const q=s=>document.querySelector(s),p2=x=>String(x).padStart(2,'0');
+q('#n1').textContent=q('#n2').textContent=C.nom;q('#gt').textContent="Un cadeau t'attend, "+C.nom;q('#sg').textContent="— "+C.signature;
+let age=0;
+if(C.naissance){const b=new Date(C.naissance),n=new Date();age=n.getFullYear()-b.getFullYear()-((n.getMonth()<b.getMonth()||(n.getMonth()==b.getMonth()&&n.getDate()<b.getDate()))?1:0);q('#age').textContent=age+" ans · "+Math.floor((n-b)/864e5)+" jours de toi";}
+// compte à rebours jusqu'à minuit
+function tick(){const n=new Date(),e=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1),s=Math.max(0,(e-n)/1e3|0);q('#cd').textContent=p2(s/3600|0)+" h "+p2(s%3600/60|0)+" min "+p2(s%60)+" s";}tick();setInterval(tick,1000);
+// fanions
+(function(){const s=q('#bunt'),w=innerWidth,n=Math.ceil(w/44),c=['#ff4d6d','#e8c39e','#f08aa3','#fff0f3','#c9a876'];let h='<path d="M0 6 Q'+w/2+' 34 '+w+' 6" stroke="#e8c39e" fill="none" stroke-width="1.5"/>';for(let i=0;i<n;i++){const x=i*44+6,t=i/n,y=6+Math.sin(t*Math.PI)*14;h+='<polygon points="'+x+','+y+' '+(x+32)+','+y+' '+(x+16)+','+(y+34)+'" fill="'+c[i%5]+'"/>';}s.innerHTML=h;})();
+// ballons
+for(let i=0;i<14;i++){const b=document.createElement('div');b.className='b';const c=['#ff4d6d','#e8c39e','#f08aa3','#c9a876','#fff0f3'][i%5];b.style.cssText='left:'+Math.random()*95+'%;background:'+c+';animation-duration:'+(9+Math.random()*9)+'s;animation-delay:-'+Math.random()*14+'s';document.body.appendChild(b);}
+// confettis
+const cv=q('#fx'),cx=cv.getContext('2d');let P=[],run=0;
+function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();addEventListener('resize',rs);
+function burst(x,y,n){n=n||80;const col=['#ff4d6d','#e8c39e','#f08aa3','#fff','#ffd27a'];for(let i=0;i<n;i++){const a=Math.random()*6.28,v=3+Math.random()*7;P.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-5,s:4+Math.random()*5,c:col[i%5],r:Math.random()*6,vr:(Math.random()-.5)*.4,l:140+Math.random()*60});}if(!run){run=1;requestAnimationFrame(lp)}}
+function lp(){cx.clearRect(0,0,cv.width,cv.height);P=P.filter(p=>p.l-->0);P.forEach(p=>{p.vy+=.18;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;cx.save();cx.globalAlpha=Math.min(1,p.l/40);cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/3,p.s,p.s*.6);cx.restore()});if(P.length)requestAnimationFrame(lp);else run=0}
+// mélodie Happy Birthday (synthétisée, boîte à musique)
+function melody(){const A=new(window.AudioContext||window.webkitAudioContext)(),F={G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784},
+ S=[['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',2]];let t=A.currentTime+.1;const u=.42;
+ S.forEach(n=>{const o=A.createOscillator(),g=A.createGain();o.type='triangle';o.frequency.value=F[n[0]];g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.25,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+n[1]*u*1.5);o.connect(g);g.connect(A.destination);o.start(t);o.stop(t+n[1]*u*1.6);t+=n[1]*u;});return t-A.currentTime;}
+// playlist
+const au=q('#au'),mb=q('#mb'),mn=q('#mn');let tr=0,pl=false;
+function setT(){au.src=C.musique[tr]}
+function go(){if(!C.musique.length)return;setT();au.play().then(()=>{pl=true;mb.textContent='❙❙'}).catch(()=>{})}
+if(C.musique.length>1)mn.style.display='';
+au.onended=()=>{tr=(tr+1)%C.musique.length;setT();if(pl)au.play()};
+mb.onclick=()=>{if(!C.musique.length)return;if(!au.src)setT();if(pl){au.pause();mb.textContent='♪'}else{au.play();mb.textContent='❙❙'}pl=!pl};
+mn.onclick=()=>{tr=(tr+1)%C.musique.length;setT();if(pl)au.play()};
+// ouverture
+q('#gate').onclick=()=>{q('#gate').classList.add('out');burst(innerWidth/2,innerHeight/2,120);for(let i=1;i<6;i++)setTimeout(()=>burst(Math.random()*innerWidth,60,40),i*500);let d=10;try{d=melody()}catch(e){}setTimeout(go,d*1000+400);};
+// révélations au scroll
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.3});document.querySelectorAll('.rv').forEach(e=>io.observe(e));
+// cœur de mots
+(function(){const cv=q('#hc'),c=cv.getContext('2d'),W=640,H=560,sc=Math.min(W,H)/2.6,W0=['Joyeux anniversaire',C.nom,'♥'].concat(age?[age+' ans']:[]),Ps=[];let n=0;
+ while(Ps.length<150&&n++<20000){const x=Math.random()*2.6-1.3,y=Math.random()*2.4-1.2;if(Math.pow(x*x+y*y-1,3)-x*x*y*y*y<=0){const w=W0[Ps.length%W0.length],s=11+Math.random()*8,o=document.createElement('canvas');o.width=s*w.length*.65+40;o.height=s*2+40;const k=o.getContext('2d');k.font=s+'px Georgia';k.textAlign='center';k.textBaseline='middle';k.shadowColor='#ff4d6d';k.shadowBlur=14;k.fillStyle='#ff6b81';k.fillText(w,o.width/2,o.height/2);Ps.push({o:o,tx:W/2+x*sc,ty:H/2+40-y*sc,sx:Math.random()*W,sy:Math.random()*H,d:Math.random()*600,u:1500+Math.random()*900,ph:Math.random()*6,sp:.0016+Math.random()*.0012});}}
+ let t0=0,on=0;function fr(now){if(!t0)t0=now;const t=now-t0;c.clearRect(0,0,W,H);Ps.forEach(p=>{const l=t-p.d;let x,y,a;if(l<=0){return}else if(l<p.u){const e=1-Math.pow(1-l/p.u,3);x=p.sx+(p.tx-p.sx)*e;y=p.sy+(p.ty-p.sy)*e;a=e}else{x=p.tx;y=p.ty;a=.6+.4*Math.sin(t*p.sp+p.ph)}c.globalAlpha=a;c.drawImage(p.o,x-p.o.width/2,y-p.o.height/2)});c.globalAlpha=1;requestAnimationFrame(fr)}
+ new IntersectionObserver((es,ob)=>{if(es[0].isIntersecting&&!on){on=1;requestAnimationFrame(fr);ob.disconnect()}},{threshold:.4}).observe(cv);
+ function rz(){const m=Math.min(640,innerWidth*.92);cv.style.width=m+'px';cv.style.height=m*560/640+'px'}rz();addEventListener('resize',rz);})();
+// gâteau et bougies
+const cs=q('#cs');[105,128,150,172,195].forEach(x=>{cs.innerHTML+='<rect x="'+(x-3)+'" y="62" width="6" height="34" fill="#ffd27a"/><ellipse class="fl" cx="'+x+'" cy="52" rx="6" ry="11"/>'});
+let out=false;function ov(t){q('#sc').textContent=t;q('#ov').classList.add('show')}
+function eteint(){if(out)return;out=true;q('#ck').classList.add('off');const r=q('#ck').getBoundingClientRect();burst(r.left+r.width/2,r.top+40,140);setTimeout(()=>ov(C.secret),900)}
+q('#ck').onclick=eteint;q('#cl').onclick=()=>q('#ov').classList.remove('show');
+q('#mic').onclick=async()=>{try{const s=await navigator.mediaDevices.getUserMedia({audio:true}),a=new AudioContext(),an=a.createAnalyser();an.fftSize=512;a.createMediaStreamSource(s).connect(an);const b=new Uint8Array(an.fftSize);let h=0;(function l(){if(out){s.getTracks().forEach(t=>t.stop());return}an.getByteTimeDomainData(b);let m=0;for(const v of b)m=Math.max(m,Math.abs(v-128));h=m>60?h+1:0;if(h>12){s.getTracks().forEach(t=>t.stop());eteint();return}requestAnimationFrame(l)})();q('#mt').textContent='Souffle près du micro…'}catch(e){q('#mt').textContent='Micro indisponible : touche le gâteau.'}};
+// cadeaux
+C.cadeaux.forEach(t=>{const g=document.createElement('div');g.className='gift';g.innerHTML='<span class="e">🎁</span><p></p>';g.querySelector('p').textContent=t;g.onclick=()=>{if(!g.classList.contains('open')){g.classList.add('open');const r=g.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,50)}};q('#gf').appendChild(g)});
+// lettre
+q('#lt').textContent=C.lettre;q('#ev').onclick=()=>{q('#ev').classList.add('open');q('#lt').classList.add('show')};
+// polaroids
+if(!C.photos.length)q('#gal').style.display='none';
+C.photos.forEach((u,i)=>{const f=document.createElement('figure');f.style.setProperty('--a',(Math.random()*16-8)+'deg');f.innerHTML='<img loading="lazy" alt="">';f.firstChild.src=u;f.onclick=()=>{const w=f.classList.contains('on');document.querySelectorAll('.pol figure').forEach(x=>x.classList.remove('on'));if(!w)f.classList.add('on')};q('#pl').appendChild(f)});
+// mur de vœux
+if(C.voeux.length){q('#wl').style.display='';C.voeux.forEach(v=>{const d=document.createElement('div');d.className='card';d.innerHTML='<b></b><span></span>';d.firstChild.textContent=v.de;d.lastChild.textContent=v.t;q('#wb').appendChild(d)})}
+// bling : étincelles, feux d'artifice, options, tirage de vœu
+let sk=true,ls=0;
+function spark(x,y){if(!sk)return;const n=performance.now();if(n-ls<45)return;ls=n;const e=document.createElement('div');e.textContent=Math.random()<.5?'✦':'✧';e.style.cssText='position:fixed;left:'+x+'px;top:'+y+'px;z-index:70;pointer-events:none;color:'+['#ffd27a','#ff8fa3','#fff'][Math.random()*3|0]+';font-size:'+(10+Math.random()*12)+'px;animation:sp .9s ease-out forwards';document.body.appendChild(e);setTimeout(()=>e.remove(),900)}
+addEventListener('pointermove',e=>spark(e.clientX,e.clientY));
+addEventListener('touchmove',e=>{const t=e.touches[0];if(t)spark(t.clientX,t.clientY)},{passive:true});
+q('#fwb').onclick=()=>{for(let i=0;i<6;i++)setTimeout(()=>burst(innerWidth*(.15+Math.random()*.7),innerHeight*(.15+Math.random()*.35),90),i*380)};
+q('#ob').onclick=()=>q('#opt').classList.toggle('show');
+q('#o1').onchange=e=>document.body.classList.toggle('nb',!e.target.checked);
+q('#o2').onchange=e=>{sk=e.target.checked};
+q('#o3').onchange=e=>document.documentElement.style.setProperty('--r',e.target.checked?'#ffd27a':'#ff4d6d');
+q('#dw').onclick=()=>{const v=C.voeux[Math.random()*C.voeux.length|0],d=q('#dc');d.style.display='block';d.textContent='« '+v.t+' »';d.style.animation='none';d.offsetHeight;d.style.animation='fi .8s';const r=d.getBoundingClientRect();burst(r.left+r.width/2,r.top,50)};
+document.querySelectorAll('.card').forEach(c=>{c.classList.add('rv');io.observe(c)});
+</script></body></html>
